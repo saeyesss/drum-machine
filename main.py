@@ -10,6 +10,7 @@ HEIGHT = 800
 black = (0, 0, 0)
 white = (255, 255, 255)
 gray = (128, 128, 128)
+dark_gray = (50, 50, 50)
 green = (0, 255, 0)
 gold = (212, 175, 55)
 blue = (0, 255, 255)
@@ -17,6 +18,7 @@ blue = (0, 255, 255)
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 pygame.display.set_caption("Drum-Machine")
 label_font = pygame.font.Font('./public/Roboto-Bold.ttf', 32)
+medium_font = pygame.font.Font('./public/Roboto-Bold.ttf', 24)
 
 fps = 60
 timer = pygame.time.Clock()
@@ -37,6 +39,7 @@ kick = mixer.Sound('.\public\sounds\kick.wav')
 crash = mixer.Sound('.\public\sounds\crash.wav')
 clap = mixer.Sound('.\public\sounds\clap.wav')
 tom = mixer.Sound(".\public\sounds\\tom.wav")
+pygame.mixer.set_num_channels(instruments * 3)
 
 
 def play_notes():
@@ -54,7 +57,7 @@ def play_notes():
                 clap.play()
             if i == 5:
                 tom.play()
-                
+
 
 def draw_grid(clicks, beat):
     left_box = pygame.draw.rect(screen, gray, [0, 0, 200, HEIGHT - 200], 5)
@@ -111,6 +114,18 @@ while run:
     screen.fill(black)
     boxes = draw_grid(clicked, active_beat)
 
+    # menu buttons
+    play_pause = pygame.draw.rect(screen, gray, [50, HEIGHT - 150, 200, 100], 0, 5)
+    play_text = label_font.render("Play/Pause", True, white)
+    screen.blit(play_text, (70, HEIGHT - 130))
+
+    if playing:
+        play_text2 = medium_font.render("Playing", True, dark_gray)
+    else:
+        play_text2 = medium_font.render("Paused", True, dark_gray)
+    screen.blit(play_text2, (70, HEIGHT - 100))
+
+    # play note at every beat
     if beat_changed:
         play_notes()
         beat_changed = False
@@ -125,6 +140,12 @@ while run:
                 if boxes[i][0].collidepoint(event.pos):
                     coords = boxes[i][1]
                     clicked[coords[1]][coords[0]] *= -1  # invert the thing when selected if -1 => 1 and vice versa
+        if event.type == pygame.MOUSEBUTTONUP:
+            if play_pause.collidepoint(event.pos):
+                if playing:
+                    playing = False
+                elif not playing:
+                    playing = True
 
     beat_length = (fps * 60) // bpm
 
