@@ -26,7 +26,7 @@ beats = 16
 instruments = 6
 boxes = []
 clicked = [[-1 for _ in range(beats)] for _ in range(instruments)]  # -1 is for those that are not selected
-bpm = 240
+bpm = 240*2
 playing = True
 active_length = 0
 active_beat = 0
@@ -124,6 +124,15 @@ while run:
     else:
         play_text2 = medium_font.render("Paused", True, dark_gray)
     screen.blit(play_text2, (70, HEIGHT - 100))
+
+
+    # bpm
+    bpm_rect = pygame.draw.rect(screen, gray, [300, HEIGHT-150, 75, 100],5, 5)
+    bpm_text = medium_font.render("BPM", True, white)
+    screen.blit(bpm_text, (310, HEIGHT - 130))
+    bpm_text2 = label_font.render(f"{bpm}", True, white)
+    screen.blit(bpm_text2, (310, HEIGHT - 100))
+
 
     # play note at every beat
     if beat_changed:
